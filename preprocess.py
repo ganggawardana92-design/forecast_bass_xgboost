@@ -15,6 +15,7 @@ import argparse
 import os
 import sys
 import subprocess
+import zipfile
 from collections import Counter, defaultdict
 from pathlib import Path
 
@@ -34,22 +35,52 @@ from dbfread import DBF
 
 def parse_args():
     p = argparse.ArgumentParser()
-    p.add_argument("--input", default="ANALIS.xls", help="Path file ANALIS.xls/DBF")
+    p.add_argument("--input", default="data/ANALIS.zip", help="Path ANALIS.zip atau ANALIS.xls/DBF")
     p.add_argument("--output", default="data/daily_sales_jual.csv", help="CSV harian hasil preprocessing")
     p.add_argument("--summary", default="data/preprocessing_summary.csv", help="Ringkasan preprocessing")
     return p.parse_args()
 
 
+def resolve_source(input_path: Path) -> Path:
+    """Terima ANALIS.zip atau file DBF/ANALIS.xls dan kembalikan path DBF yang siap dibaca."""
+    if not input_path.exists():
+        raise FileNotFoundError(
+            f"{input_path} tidak ditemukan. Pastikan data/ANALIS.zip ada di repository."
+        )
+
+    if input_path.suffix.lower() != ".zip":
+        return input_path
+
+    extract_dir = input_path.parent / "_extracted"
+    extract_dir.mkdir(parents=True, exist_ok=True)
+
+    with zipfile.ZipFile(input_path, "r") as zf:
+        members = [m for m in zf.namelist() if not m.endswith("/")]
+        if not members:
+            raise ValueError(f"{input_path} kosong.")
+
+        preferred = [m for m in members if Path(m).name.lower() == "analis.xls"]
+        chosen = preferred[0] if preferred else members[0]
+
+        target = extract_dir / Path(chosen).name
+        if not target.exists() or target.stat().st_size == 0:
+            with zf.open(chosen) as src_f, open(target, "wb") as dst_f:
+                while True:
+                    chunk = src_f.read(1024 * 1024)
+                    if not chunk:
+                        break
+                    dst_f.write(chunk)
+
+    print(f"ZIP diekstrak: {input_path} -> {target}")
+    return target
+
+
 def main():
     args = parse_args()
-    src = Path(args.input)
+    input_path = Path(args.input)
+    src = resolve_source(input_path)
     out = Path(args.output)
     summary_path = Path(args.summary)
-
-    if not src.exists():
-        raise FileNotFoundError(
-            f"{src} tidak ditemukan. Upload ANALIS.xls ke Colab, lalu jalankan kembali."
-        )
 
     out.parent.mkdir(parents=True, exist_ok=True)
     summary_path.parent.mkdir(parents=True, exist_ok=True)
@@ -131,7 +162,8 @@ def main():
     daily.to_csv(out, index=False)
 
     summary_rows = [
-        ("source_file", str(src)),
+        ("source_archive_or_file", str(input_path)),
+        ("resolved_source_file", str(src)),
         ("source_format", "dBase/DBF (meskipun ekstensi .xls)"),
         ("date_min", str(min_date.date())),
         ("date_max", str(max_date.date())),
