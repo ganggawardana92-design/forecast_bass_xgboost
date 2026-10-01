@@ -33,7 +33,7 @@ File \`data/daily_sales_jual.csv\` adalah hasil agregasi harian transaksi penjua
 \`\`\`python
 !git clone https://github.com/ganggawardana92-design/forecast_bass_xgboost.git
 %cd forecast_bass_xgboost
-!python code.py
+!python forecast.py
 \`\`\`
 
 Output:
