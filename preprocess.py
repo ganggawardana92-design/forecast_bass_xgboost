@@ -34,7 +34,7 @@ from dbfread import DBF
 
 def parse_args():
     p = argparse.ArgumentParser()
-    p.add_argument("--input", default="/content/ANALIS.xls", help="Path file ANALIS.xls/DBF")
+    p.add_argument("--input", default="ANALIS.xls", help="Path file ANALIS.xls/DBF")
     p.add_argument("--output", default="data/daily_sales_jual.csv", help="CSV harian hasil preprocessing")
     p.add_argument("--summary", default="data/preprocessing_summary.csv", help="Ringkasan preprocessing")
     return p.parse_args()
