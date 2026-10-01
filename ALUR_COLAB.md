@@ -67,7 +67,7 @@ Jangan langsung menghapus zero/outlier sebelum memastikan apakah itu benar-benar
 ## 6. Jalankan model
 
 ```python
-!python code.py
+!python forecast.py
 ```
 
 Model:
