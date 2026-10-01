@@ -33,7 +33,7 @@ from scipy.optimize import curve_fit
 from sklearn.metrics import mean_absolute_error, mean_squared_error
 from xgboost import XGBRegressor
 
-DATA_URL = "https://raw.githubusercontent.com/ganggawardana92-design/forecast_bass_xgboost/main/data/daily_sales_jual.csv"
+DATA_URL = "https://raw.githubusercontent.com/ganggawardana92-design/forecast_bass_xgboost/main/data/daily_sales_jual.csv"\nLOCAL_DATA_PATH = "data/daily_sales_jual.csv"
 TRAIN_RATIO = 0.80
 FORECAST_HORIZON = 30
 RANDOM_STATE = 42
@@ -52,10 +52,19 @@ XGB_PARAMS = {
 }
 
 def load_data():
-    df = pd.read_csv(DATA_URL)
+    # Jika preprocess.py baru saja dijalankan, gunakan hasil lokal.
+    # Jika tidak ada, fallback ke data agregat yang tersimpan di GitHub.
+    source = LOCAL_DATA_PATH if os.path.exists(LOCAL_DATA_PATH) else DATA_URL
+    print(f"Data model: {source}")
+    df = pd.read_csv(source)
+    required = {"date", "sales_qty"}
+    missing = required - set(df.columns)
+    if missing:
+        raise ValueError(f"Kolom wajib tidak ditemukan: {sorted(missing)}")
+
     df["date"] = pd.to_datetime(df["date"])
     df["sales_qty"] = pd.to_numeric(df["sales_qty"], errors="coerce").fillna(0.0)
-    df = df.sort_values("date").drop_duplicates("date")
+    df = df.sort_values("date").drop_duplicates("date", keep="last")
     full_dates = pd.date_range(df["date"].min(), df["date"].max(), freq="D")
     df = df.set_index("date").reindex(full_dates)
     df.index.name = "date"
