@@ -34,7 +34,7 @@ Pilih `ANALIS.xls`.
 ## 4. Preprocessing
 
 ```python
-!python preprocess.py --input /content/ANALIS.xls
+!python preprocess.py --input ANALIS.xls
 ```
 
 Preprocessing:
