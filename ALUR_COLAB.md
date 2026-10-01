@@ -22,19 +22,16 @@ Dependency:
 - matplotlib: grafik
 - dbfread: membaca ANALIS.xls yang sebenarnya berformat DBF
 
-## 3. Upload data mentah
+## 3. Data mentah dari GitHub
 
 ```python
-from google.colab import files
-uploaded = files.upload()
-```
-
-Pilih `ANALIS.xls`.
+# ANALIS.zip sudah tersedia di folder data/ pada repository.
+# Tidak perlu upload manual dari komputer.
 
 ## 4. Preprocessing
 
 ```python
-!python preprocess.py --input ANALIS.xls
+!python preprocess.py --input data/ANALIS.zip
 ```
 
 Preprocessing:
