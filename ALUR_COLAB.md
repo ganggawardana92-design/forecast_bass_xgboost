@@ -24,9 +24,13 @@ Dependency:
 
 ## 3. Data mentah dari GitHub
 
+`data/ANALIS.zip` sudah tersedia di repository, jadi tidak perlu upload manual dari komputer.
+
+Cek file:
+
 ```python
-# ANALIS.zip sudah tersedia di folder data/ pada repository.
-# Tidak perlu upload manual dari komputer.
+!ls -lh data/ANALIS.zip
+```
 
 ## 4. Preprocessing
 
