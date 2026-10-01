@@ -33,7 +33,8 @@ from scipy.optimize import curve_fit
 from sklearn.metrics import mean_absolute_error, mean_squared_error
 from xgboost import XGBRegressor
 
-DATA_URL = "https://raw.githubusercontent.com/ganggawardana92-design/forecast_bass_xgboost/main/data/daily_sales_jual.csv"\nLOCAL_DATA_PATH = "data/daily_sales_jual.csv"
+DATA_URL = "https://raw.githubusercontent.com/ganggawardana92-design/forecast_bass_xgboost/main/data/daily_sales_jual.csv"
+LOCAL_DATA_PATH = "data/daily_sales_jual.csv"
 TRAIN_RATIO = 0.80
 FORECAST_HORIZON = 30
 RANDOM_STATE = 42
